@@ -1,13 +1,16 @@
+from contextlib import asynccontextmanager
+
 from fastapi import FastAPI
 
-app = FastAPI()
+from app.db import init_db
+from app.views.receipt import router as receipt_router
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Load the DB
+    init_db()
+    yield
 
 
-@app.get("/")
-async def root():
-    return {"message": "Hello World"}
-
-
-@app.get("/hello/{name}")
-async def say_hello(name: str):
-    return {"message": f"Hello {name}"}
+app = FastAPI(lifespan=lifespan)
+app.include_router(receipt_router)
