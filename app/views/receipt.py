@@ -1,41 +1,30 @@
 import uuid
-from typing import Any, Annotated
+from typing import Any
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter
 
 from app.db import SessionDep
-from app.models import Receipt
-from app.repository.item import ItemRepository
-from app.repository.receipt import ReceiptRepository
-from app.serializers.receipt import ReceiptRequest, ReceiptResponse
+from app.schemas.receipt import ReceiptRequest, ReceiptResponse
+from app.services.receipt import ReceiptService
 
 router = APIRouter(prefix="/receipts", tags=["receipts"])
 
 
-# @router.get("/{id}", response_model=ItemPublic)
-# def read_item(session: SessionDep, current_user: CurrentUser, id: uuid.UUID) -> Any:
-#     """
-#     Get item by ID.
-#     """
-#     item = session.get(Item, id)
-#         if not item:
-#             raise HTTPException(status_code=404, detail="Item not found")
+@router.get("/{id_}/points", response_model=dict[str, int])
+def read_item(session: SessionDep, id_: uuid.UUID) -> Any:
+    _service = ReceiptService(session)
+    points = _service.get_points(id_)
 
-#     return item
+    return {"points": points}
 
 
 @router.post("/process", response_model=ReceiptResponse)
 def process_receipt(
     *,
     session: SessionDep,
-    rec_repository:  Annotated[ReceiptRepository, Depends(ReceiptRepository)],
-    item_repository:  Annotated[ItemRepository, Depends(ItemRepository)],
     receipt_in: ReceiptRequest,
 ) -> Any:
-    items = item_repository.create(receipt_in.model_dump()["items"])
-    session.add_all(items)
-    instance = rec_repository.create(receipt_in.model_dump(),items)
-    session.add(instance)
+    _service = ReceiptService(session)
+    instance = _service.create(receipt_in)
 
-    session.commit()
-    return {"id": instance.id}
+    return ReceiptResponse(**{"id": instance.id})

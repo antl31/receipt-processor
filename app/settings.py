@@ -13,7 +13,7 @@ class Settings(BaseSettings):
     SECRET_KEY: str = secrets.token_urlsafe(32)
 
     ENVIRONMENT: Literal["local", "staging", "production"] = "local"
-    DATABASE_URI: str = "sqlite:///123.db"
+    DATABASE_URI: str = "sqlite:///test.db"
 
 
 settings = Settings()  # type: ignore

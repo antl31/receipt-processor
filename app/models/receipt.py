@@ -1,8 +1,7 @@
 import datetime
 import uuid
-from typing import List
 
-from sqlmodel import Field, SQLModel, Relationship
+from sqlmodel import Field, Relationship, SQLModel
 
 from app.models import Item
 from app.models.item import ReceiptItems
@@ -16,5 +15,4 @@ class Receipt(SQLModel, table=True):
     purchase_at: datetime.datetime
     total: float = Field(nullable=False)
 
-    # items: list[Item] = Relationship(back_populates="receipts", link_model=receipt_item)
-    items: List[Item] = Relationship(back_populates="receipts", link_model=ReceiptItems)
+    items: list[Item] = Relationship(back_populates="receipts", link_model=ReceiptItems)

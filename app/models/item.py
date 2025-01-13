@@ -1,15 +1,10 @@
 import uuid
-from typing import List
+from typing import TYPE_CHECKING
 
-from sqlalchemy import Column, ForeignKey, Table
 from sqlmodel import Field, Relationship, SQLModel
 
-# receipt_item = Table(
-#     "receipt_item",
-#     SQLModel.metadata,
-#     Column("receipt_id", ForeignKey("receipt.id", ondelete="CASCADE"), primary_key=True),
-#     Column("item_id", ForeignKey("item.id", ondelete="CASCADE"), primary_key=True),
-# )
+if TYPE_CHECKING:
+    from app.models import Receipt
 
 
 class ReceiptItems(SQLModel, table=True):
@@ -26,8 +21,6 @@ class Item(SQLModel, table=True):
     description: str = Field(nullable=False)
     price: float = Field(nullable=False)
 
-    # Back reference to the Receipt model
-    # receipts: list["Receipt"] = Relationship(back_populates="items", link_model=receipt_item)
-    receipts: List["Receipt"] = Relationship(
+    receipts: list["Receipt"] = Relationship(
         back_populates="items", link_model=ReceiptItems
     )
