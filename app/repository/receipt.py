@@ -1,6 +1,6 @@
 import datetime
 import uuid
-from typing import Any, Optional
+from typing import Any
 
 from sqlmodel import Session, select
 
@@ -23,6 +23,6 @@ class ReceiptRepository:
         )
         return receipt
 
-    def get_by_id(self, id_: uuid.UUID) -> Optional[Receipt]:
+    def get_by_id(self, id_: uuid.UUID) -> Receipt | None:
         statement = select(Receipt).where(Receipt.id == id_)
         return self.session.exec(statement).first()

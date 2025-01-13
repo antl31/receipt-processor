@@ -13,7 +13,7 @@ class ItemRepository:
         items = []
         for item_data in items_:
             items.append(
-                Item(
+                Item(  # type: ignore
                     description=item_data["short_description"], price=item_data["price"]
                 )
             )

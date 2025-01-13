@@ -8,7 +8,7 @@ from app.models.item import ReceiptItems
 
 
 class Receipt(SQLModel, table=True):
-    __tablename__ = "receipt"
+    __tablename__ = "receipt"  # type: ignore
 
     id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
     retailer: str
